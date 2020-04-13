@@ -6,6 +6,12 @@ a function or an object to Workerify, which returns an asynchronous function.
 This function may be called just like the original one but will be processed in
 the dedicated Web Worker; it will return promises.
 
+## Context
+
+It is possible to pass an additional `context` argument to Workerify. This context
+is an array of objects or functions, which may be required for the main target
+functions. 
+
 ## Example
 
 First, import Workerify from here with:

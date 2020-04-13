@@ -4,7 +4,7 @@ const strToWorker = (str) => {
   URL.revokeObjectURL(str);
   return worker;
 }
-const Workerify = (target) => {
+const Workerify = (target,context=[]) => {
   let worker = {};
   worker.promises = [];
   worker.tasks = 0;
@@ -28,9 +28,27 @@ const Workerify = (target) => {
     onMessage += "{\n";
     onMessage += Object.keys(target)
       .map(e => e+": "+target[e].toString()).join(",\n");
-    onMessage += "\n}\n";     
+    onMessage += "\n}";     
   }
-  worker.worker = strToWorker(onMessage);
+  onMessage += ";\n";
+  context = context.map(e => {
+    if (typeof e.value === "function") {
+      e.value = e.value.toString();
+    } else {
+        e.value = "{\n"+Object.keys(e.value).map(k => {
+        let out = JSON.stringify(k)+": ";
+        if (typeof e.value[k] === "function") {
+          out+=e.value[k].toString();
+        } else {
+          out+=JSON.stringify(e.value[k])
+        }
+        return out;
+      }).join(",\n")+"\n}";
+    }
+    e.value = "let "+e.name+" = "+e.value;
+    return e.value;
+  }).join(";\n");
+  worker.worker = strToWorker(onMessage+context);
   worker.worker.onmessage = (e) => {
     worker.promises.find(p => p.id == e.data.id).resolve(e.data.resolve);
   }
