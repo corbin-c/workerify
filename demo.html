@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>workerify demo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+    <script type="module">
+import { Workerify } from "./workerify.js";
+(async () => {
+  let worker = {
+    square: (x) => x*x,
+    cube:(x) => x*x*x,
+    sum:(...args) => args.reduce((accumulator,current) => accumulator+current),
+    multiply:(x,y) => x*y,
+  }
+  worker = Workerify(worker);
+  console.log(await worker.square(2));
+  console.log(await worker.cube(2));
+  console.log(await worker.sum(1,2,3,4,5));
+  console.log(await worker.multiply(2,5));
+})()
+    </script>
+  </body>
+</html>
