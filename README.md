@@ -12,6 +12,12 @@ It is possible to pass an additional `context` argument to Workerify. This conte
 is an array of objects or functions, which may be required for the main target
 functions. 
 
+## Instances
+
+An extra `instances` parameter may be passed to Workerify. It indicates the number
+of instances of the worker to be created. Multiple instances are handled
+seamlessly for the user.
+
 ## Example
 
 First, import Workerify from here with:

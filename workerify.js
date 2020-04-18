@@ -4,9 +4,11 @@ const strToWorker = (str) => {
   URL.revokeObjectURL(str);
   return worker;
 }
-const Workerify = (target,context=[]) => {
+const Workerify = (target,context=[],instances=1) => {
   let worker = {};
   worker.promises = [];
+  worker.instances = instances;
+  worker.workers = [...(new Array(worker.instances)).fill({})];
   worker.tasks = 0;
   let onMessage = () => {
     if (typeof target !== "function") {
@@ -48,14 +50,17 @@ const Workerify = (target,context=[]) => {
     e.value = "let "+e.name+" = "+e.value;
     return e.value;
   }).join(";\n");
-  worker.worker = strToWorker(onMessage+context);
-  worker.worker.onmessage = (e) => {
-    worker.promises.find(p => p.id == e.data.id).resolve(e.data.resolve);
-  }
+  worker.workers = worker.workers.map((e,i) => {
+    let subworker = strToWorker(onMessage+context);
+    subworker.onmessage = (e) => {
+      worker.promises.find(p => p.id == e.data.id).resolve(e.data.resolve);
+    };
+    return subworker;
+  });
   let callWorker = (task,...args) => {
     return (...args) => {
       worker.tasks++;
-      worker.worker.postMessage({
+      worker.workers[worker.tasks%worker.instances].postMessage({
         id:worker.tasks,
         args:args,
         task:task
