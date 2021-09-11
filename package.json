@@ -1,0 +1,19 @@
+{
+  "name": "workerify",
+  "version": "1.0.0",
+  "description": "Workerifiy is an ES module to wrap any function or object into a Web Worker. It avoids the pain of creating a separate worker file and handling messages. One pass a function or an object to Workerify, which returns an asynchronous function. This function may be called just like the original one but will be processed in the dedicated Web Worker; it will return promises.",
+  "main": "workerify.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/corbin-c/workerify.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/corbin-c/workerify/issues"
+  },
+  "homepage": "https://github.com/corbin-c/workerify#readme"
+}
